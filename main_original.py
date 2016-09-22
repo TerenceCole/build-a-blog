@@ -3,6 +3,7 @@ import webapp2
 import jinja2
 
 from google.appengine.ext import db
+#from models import Post
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -52,19 +53,17 @@ class NewPostHandler(Handler):
             a = Art(title = title, art = art)
             a.put()
 
-            id = a.key().id()
-            self.redirect("/blog/%s" % id)
-
+            self.redirect("/blog")
         else:
             error = "We need both a title and a blog entry!"
             self.render_front(title, art, error)
 
-class ViewPostHandler(Handler):
+class ViewPostHandler(webapp2.RequestHandler):
     def get(self, id):
 
         post = Art.get_by_id(int(id))
         if post:
-            t = jinja_env.get_template("permalink.html")
+            t = jinja_env.get_template("testpost.html")
             response = t.render(post=post)
         else:
             error = "Sorry, but there is no post with the following id: %s" % id
